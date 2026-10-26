@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sole Mates Demo Data
  * Description: Creates the 12-product Sole Mates catalog (variable products, $1 each) from data/products.json on activation. Deactivate / delete to remove the demo data hook — products themselves are normal WooCommerce products and can be deleted in Products > All Products.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author: WSI Hackathon Team
  */
 
@@ -13,15 +13,25 @@ register_activation_hook( __FILE__, 'sole_mates_create_demo_products' );
 function sole_mates_create_demo_products() {
     if ( ! class_exists( 'WooCommerce' ) ) return;
 
-    // Repo layout: <repo>/wp-content/plugins/sole-mates-demo-data/<this file>
-    // so 3 levels up is the repo root, which holds data/products.json.
-    // If the plugin is copied into LocalWP on its own, copy data/ to
-    // wp-content/sole-mates-data/ as the fallback below.
-    $json_path = dirname( __FILE__, 3 ) . '/data/products.json';
-    if ( ! file_exists( $json_path ) ) {
-        $json_path = WP_CONTENT_DIR . '/sole-mates-data/products.json';
+    // When installed in WordPress, this file is at
+    // wp-content/plugins/sole-mates-demo-data/sole-mates-demo-data.php,
+    // so the data file is NOT 3 levels up in the repo — it must be
+    // copied to wp-content/sole-mates-data/products.json (see README).
+    // Check that location first, then a few other likely locations.
+    $candidates = array(
+        WP_CONTENT_DIR . '/sole-mates-data/products.json',
+        WP_CONTENT_DIR . '/data/products.json',
+        dirname( __FILE__ ) . '/data/products.json',
+        dirname( __FILE__, 3 ) . '/data/products.json',
+    );
+    $json_path = '';
+    foreach ( $candidates as $candidate ) {
+        if ( file_exists( $candidate ) ) { $json_path = $candidate; break; }
     }
-    if ( ! file_exists( $json_path ) ) return;
+    if ( ! $json_path ) {
+        error_log( 'Sole Mates Demo Data: products.json not found. Tried: ' . implode( ', ', $candidates ) );
+        return;
+    }
 
     $data = json_decode( file_get_contents( $json_path ), true );
     if ( empty( $data['products'] ) ) return;
