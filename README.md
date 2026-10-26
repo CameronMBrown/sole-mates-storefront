@@ -1,0 +1,45 @@
+# Sole Mates — Mock Shoe Store
+
+Fictional WordPress + WooCommerce shoe store for the WSI / Meta hackathon (Ovo agent-to-agent storefront enablement). **Storefront only** — this repo does not contain the rest of the Ovo app.
+
+- Store: **Sole Mates**
+- Platform: WordPress + WooCommerce, Storefront child theme (`wp-content/themes/sole-mates`)
+- Catalog: 12 products, 79 size variations — boots, sandals, sneakers, slippers, runners, in different colours and sizes. See `data/products.json` (source of truth) and `data/products.csv` (WooCommerce import).
+- Price: **everything $1 CAD**, test-mode checkout only. No real payments.
+- Build: **clean build first**. Intentional shortcomings for the agent audit demo will be introduced later, on a separate branch / step — not in this first version.
+
+## What's in this repo
+
+| Path | What it is |
+| --- | --- |
+| `wp-content/themes/sole-mates/` | Storefront child theme. Homepage = catalog, 12 products, 3 per row. |
+| `wp-content/plugins/sole-mates-demo-data/` | Optional plugin. On activation it creates the 12 variable products from `data/products.json`. |
+| `data/products.json` | Source of truth for the catalog. |
+| `data/products.csv` | WooCommerce Product Import CSV (variable products + size variations). Use this instead of the plugin if you prefer manual import. |
+| `docs/SETUP-LOCALWP.md` | Step-by-step LocalWP setup. |
+| `docs/DEMO-SCRIPT.md` | Hero demo purchase: Velocity Road Runners, size 9.5, Electric Blue, $1. |
+
+## Quick start (LocalWP)
+
+Full steps in `docs/SETUP-LOCALWP.md`. Short version:
+
+1. In LocalWP, create a fresh site, e.g. `solemates.local`, PHP 8.1+, WordPress latest.
+2. Install + activate WooCommerce, run its setup wizard, set currency to CAD, enable test payments (WooCommerce Payments in test mode, or Cash on Delivery for the very first test).
+3. Install the **Storefront** theme from Appearance > Themes, then copy `wp-content/themes/sole-mates/` into your site's `wp-content/themes/` and activate **Sole Mates**.
+4. Create products one of two ways — pick one, not both:
+   - **Plugin:** copy `wp-content/plugins/sole-mates-demo-data/` into `wp-content/plugins/`, copy `data/` to `wp-content/sole-mates-data/` if the plugin is installed on its own, then activate the plugin.
+   - **CSV:** WooCommerce > Products > Import, upload `data/products.csv`.
+5. Set the homepage: Settings > Reading > "Your homepage displays: A static page", Homepage = a page using the Sole Mates front page, or simply leave the Shop page as the homepage for the demo. WooCommerce > Settings > Advanced should already have Cart, Checkout and My Account pages.
+6. Test checkout with a $1 product in test mode. Do not use a real card.
+
+## Assumptions / open questions
+
+- Currency is CAD (Cameron is in Toronto). Change in WooCommerce > Settings > General if the demo should be USD.
+- Sizing is US sizing. Product colours are fixed per product; size is the variable attribute. That keeps 79 variations instead of size × colour exploding.
+- No product images yet — images are a deliberate next step, and a useful thing for the agent to enrich later. For now products use WooCommerce placeholder images.
+- No real brand names. Product names are fictional / generic.
+
+## Hackathon notes
+
+- This repo must be **new and public** for the hackathon. Do not push pre-existing project history into it.
+- Do not commit WordPress core, `wp-content/uploads/`, database dumps, `.env`, or payment keys. See `.gitignore`.

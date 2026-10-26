@@ -1,0 +1,18 @@
+/*
+Theme Name: Sole Mates
+Theme URI: https://github.com/utopiads/sole-mates-storefront
+Author: WSI Hackathon Team
+Description: Child theme of Storefront for Sole Mates — a fictional mock shoe store for the Meta hackathon (Ovo agent-to-agent storefront enablement). Clean build first; intentional shortcomings will be introduced later for the audit demo.
+Version: 0.1.0
+License: GNU General Public License v2 or later
+Template: storefront
+Text Domain: sole-mates
+*/
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.site-header {
+  border-bottom: 1px solid #e5e5e5;
+}
