@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sole Mates Demo Data
- * Description: Creates the 12-product Sole Mates catalog (variable products, $1 each) from data/products.json on activation, and attaches one generated product image per shoe as the featured image. Deactivate / delete to remove the demo data hook — products themselves are normal WooCommerce products and can be deleted in Products > All Products.
- * Version: 0.1.2
+ * Description: Creates the 12-product Sole Mates catalog (variable products, $1 each) from data/products.json on activation, attaches one generated product image per shoe as the featured image, and adds 3 demo reviews per product. Deactivate / delete to remove the demo data hook — products themselves are normal WooCommerce products and can be deleted in Products > All Products.
+ * Version: 0.1.3
  * Author: WSI Hackathon Team
  */
 
@@ -68,6 +68,48 @@ function sole_mates_attach_image( $product_id, $sku ) {
     set_post_thumbnail( $product_id, $attach_id );
 }
 
+function sole_mates_add_reviews( $product_id, $item ) {
+    if ( empty( $item['reviews'] ) || ! is_array( $item['reviews'] ) ) return;
+    // Don't duplicate reviews on reactivation.
+    $existing = get_comments( array(
+        'post_id' => $product_id,
+        'type'    => 'review',
+        'count'   => true,
+    ) );
+    if ( $existing ) return;
+
+    $total = 0;
+    $count = 0;
+    foreach ( $item['reviews'] as $review ) {
+        $author = sanitize_text_field( $review['author'] );
+        $email  = sanitize_email( strtolower( str_replace( ' ', '.', $author ) ) . '@example.com' );
+        $date   = ! empty( $review['date'] ) ? $review['date'] . ' 12:00:00' : current_time( 'mysql' );
+        $comment_id = wp_insert_comment( array(
+            'comment_post_ID'      => $product_id,
+            'comment_author'       => $author,
+            'comment_author_email' => $email,
+            'comment_content'      => wp_kses_post( $review['text'] ),
+            'comment_type'         => 'review',
+            'comment_approved'     => 1,
+            'comment_date'         => $date,
+            'comment_date_gmt'     => get_gmt_from_date( $date ),
+        ) );
+        if ( ! $comment_id ) continue;
+        $rating = (int) $review['rating'];
+        add_comment_meta( $comment_id, 'rating', $rating, true );
+        $total += $rating;
+        $count++;
+    }
+    if ( $count ) {
+        $product = wc_get_product( $product_id );
+        if ( $product ) {
+            $product->set_average_rating( round( $total / $count, 2 ) );
+            $product->set_review_count( $count );
+            $product->save();
+        }
+    }
+}
+
 function sole_mates_create_demo_products() {
     if ( ! class_exists( 'WooCommerce' ) ) return;
 
@@ -81,8 +123,10 @@ function sole_mates_create_demo_products() {
         $existing_id = wc_get_product_id_by_sku( $item['sku'] );
         if ( $existing_id ) {
             // Product already exists (e.g. from a CSV import, or an earlier
-            // activation before images were added): just attach its image.
+            // activation before images / reviews were added): attach its
+            // image and add its reviews if it has none yet.
             sole_mates_attach_image( $existing_id, $item['sku'] );
+            sole_mates_add_reviews( $existing_id, $item );
             continue;
         }
 
@@ -118,6 +162,7 @@ function sole_mates_create_demo_products() {
         $product->save();
 
         sole_mates_attach_image( $product->get_id(), $item['sku'] );
+        sole_mates_add_reviews( $product->get_id(), $item );
 
         foreach ( $item['sizes'] as $size ) {
             $variation = new WC_Product_Variation();

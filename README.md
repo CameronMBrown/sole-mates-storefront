@@ -40,6 +40,7 @@ Full steps in `docs/SETUP-LOCALWP.md`. Short version:
 - Theme v0.2.0: monochrome visual polish inspired in general terms by Db Journey — black/white/light-grey, Inter type, generous spacing, square product tiles, pill buttons, hero + featured + shop-by-type + black CTA on the homepage. No sliders, no new features, no copied branding or copy.
 - Theme v0.3.0: no sidebar on product pages, no header search, no promo banner, simple Sole Mates logo (sole-tread icon + SOLE MATES wordmark) in the nav and as favicon (`wp-content/themes/sole-mates/assets/sole-mates-logo.png` and `sole-mates-icon.png`), bolder PDP tabs with hover/active states, styled variation dropdowns and quantity inputs. Delete the default WordPress Sample Page in WP Admin (Pages > Sample Page > Trash) — it is not part of the store.
 - Theme v0.3.1: sidebar also removed on shop and product category/tag pages, PDP image viewer is square with the image covering the whole area (object-fit: cover).
+- Plugin v0.1.3: 3 demo reviews per product (36 total, average 4.6 stars — 23×5, 11×4, 2×3), varied by sizing, fit, look, comfort and durability, added from `data/products.json` on activation, including for products that already exist.
 - No real brand names. Product names are fictional / generic.
 
 ## Hackathon notes
