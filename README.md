@@ -37,6 +37,7 @@ Full steps in `docs/SETUP-LOCALWP.md`. Short version:
 - Currency is CAD (Cameron is in Toronto). Change in WooCommerce > Settings > General if the demo should be USD.
 - Sizing is US sizing. Product colours are fixed per product; size is the variable attribute. That keeps 79 variations instead of size × colour exploding.
 - Product images: one generated studio image per shoe (12 total) in `assets/images/` and in the plugin at `wp-content/plugins/sole-mates-demo-data/images/`. The plugin attaches each image as the product featured image on activation. The CSV also lists each image as a raw GitHub URL, so the WooCommerce importer can fetch it once the images are in GitHub.
+- Theme v0.2.0: monochrome visual polish inspired in general terms by Db Journey — black/white/light-grey, Inter type, generous spacing, square product tiles, pill buttons, hero + featured + shop-by-type + black CTA on the homepage. No sliders, no new features, no copied branding or copy.
 - No real brand names. Product names are fictional / generic.
 
 ## Hackathon notes
