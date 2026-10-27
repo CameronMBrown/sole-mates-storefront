@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sole Mates Demo Data
- * Description: Creates the 12-product Sole Mates catalog (variable products, $1 each) from data/products.json on activation. Deactivate / delete to remove the demo data hook — products themselves are normal WooCommerce products and can be deleted in Products > All Products.
- * Version: 0.1.1
+ * Description: Creates the 12-product Sole Mates catalog (variable products, $1 each) from data/products.json on activation, and attaches one generated product image per shoe as the featured image. Deactivate / delete to remove the demo data hook — products themselves are normal WooCommerce products and can be deleted in Products > All Products.
+ * Version: 0.1.2
  * Author: WSI Hackathon Team
  */
 
@@ -10,34 +10,81 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 register_activation_hook( __FILE__, 'sole_mates_create_demo_products' );
 
-function sole_mates_create_demo_products() {
-    if ( ! class_exists( 'WooCommerce' ) ) return;
-
-    // When installed in WordPress, this file is at
-    // wp-content/plugins/sole-mates-demo-data/sole-mates-demo-data.php,
-    // so the data file is NOT 3 levels up in the repo — it must be
-    // copied to wp-content/sole-mates-data/products.json (see README).
-    // Check that location first, then a few other likely locations.
+function sole_mates_find_products_json() {
     $candidates = array(
         WP_CONTENT_DIR . '/sole-mates-data/products.json',
         WP_CONTENT_DIR . '/data/products.json',
         dirname( __FILE__ ) . '/data/products.json',
         dirname( __FILE__, 3 ) . '/data/products.json',
     );
-    $json_path = '';
     foreach ( $candidates as $candidate ) {
-        if ( file_exists( $candidate ) ) { $json_path = $candidate; break; }
+        if ( file_exists( $candidate ) ) return $candidate;
     }
-    if ( ! $json_path ) {
-        error_log( 'Sole Mates Demo Data: products.json not found. Tried: ' . implode( ', ', $candidates ) );
+    error_log( 'Sole Mates Demo Data: products.json not found. Tried: ' . implode( ', ', $candidates ) );
+    return '';
+}
+
+function sole_mates_find_image_file( $sku ) {
+    $filename = strtolower( $sku ) . '.webp';
+    $candidates = array(
+        dirname( __FILE__ ) . '/images/' . $filename,
+        WP_CONTENT_DIR . '/sole-mates-data/images/' . $filename,
+        WP_CONTENT_DIR . '/sole-mates-data/' . $filename,
+        WP_CONTENT_DIR . '/uploads/sole-mates/' . $filename,
+    );
+    foreach ( $candidates as $candidate ) {
+        if ( file_exists( $candidate ) ) return $candidate;
+    }
+    return '';
+}
+
+function sole_mates_attach_image( $product_id, $sku ) {
+    if ( has_post_thumbnail( $product_id ) ) return;
+    $file = sole_mates_find_image_file( $sku );
+    if ( ! $file ) {
+        error_log( 'Sole Mates Demo Data: image not found for ' . $sku );
         return;
     }
+    $contents = file_get_contents( $file );
+    if ( false === $contents ) return;
+    $filename = strtolower( $sku ) . '.webp';
+    $upload = wp_upload_bits( $filename, null, $contents );
+    if ( ! empty( $upload['error'] ) ) {
+        error_log( 'Sole Mates Demo Data: upload failed for ' . $sku . ': ' . $upload['error'] );
+        return;
+    }
+    $filetype = wp_check_filetype( $upload['file'] );
+    $attachment = array(
+        'post_mime_type' => $filetype['type'] ? $filetype['type'] : 'image/webp',
+        'post_title'     => sanitize_file_name( $filename ),
+        'post_content'   => '',
+        'post_status'    => 'inherit',
+    );
+    $attach_id = wp_insert_attachment( $attachment, $upload['file'], $product_id );
+    if ( is_wp_error( $attach_id ) || ! $attach_id ) return;
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+    wp_update_attachment_metadata( $attach_id, $attach_data );
+    set_post_thumbnail( $product_id, $attach_id );
+}
+
+function sole_mates_create_demo_products() {
+    if ( ! class_exists( 'WooCommerce' ) ) return;
+
+    $json_path = sole_mates_find_products_json();
+    if ( ! $json_path ) return;
 
     $data = json_decode( file_get_contents( $json_path ), true );
     if ( empty( $data['products'] ) ) return;
 
     foreach ( $data['products'] as $item ) {
-        if ( wc_get_product_id_by_sku( $item['sku'] ) ) continue; // already created
+        $existing_id = wc_get_product_id_by_sku( $item['sku'] );
+        if ( $existing_id ) {
+            // Product already exists (e.g. from a CSV import, or an earlier
+            // activation before images were added): just attach its image.
+            sole_mates_attach_image( $existing_id, $item['sku'] );
+            continue;
+        }
 
         $term = get_term_by( 'name', $item['type'], 'product_cat' );
         $cat_id = $term ? (int) $term->term_id : 0;
@@ -69,6 +116,8 @@ function sole_mates_create_demo_products() {
         if ( $cat_id ) $product->set_category_ids( array( $cat_id ) );
         $product->set_attributes( array( $size_attr, $colour_attr ) );
         $product->save();
+
+        sole_mates_attach_image( $product->get_id(), $item['sku'] );
 
         foreach ( $item['sizes'] as $size ) {
             $variation = new WC_Product_Variation();

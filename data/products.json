@@ -24,7 +24,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Boots"
+      "category": "Boots",
+      "image": "assets/images/sm-boot-001.webp"
     },
     {
       "sku": "SM-BOOT-002",
@@ -46,7 +47,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Boots"
+      "category": "Boots",
+      "image": "assets/images/sm-boot-002.webp"
     },
     {
       "sku": "SM-SAND-001",
@@ -69,7 +71,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Sandals"
+      "category": "Sandals",
+      "image": "assets/images/sm-sand-001.webp"
     },
     {
       "sku": "SM-SAND-002",
@@ -91,7 +94,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Sandals"
+      "category": "Sandals",
+      "image": "assets/images/sm-sand-002.webp"
     },
     {
       "sku": "SM-SNEA-001",
@@ -115,7 +119,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Sneakers"
+      "category": "Sneakers",
+      "image": "assets/images/sm-snea-001.webp"
     },
     {
       "sku": "SM-SNEA-002",
@@ -138,7 +143,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Sneakers"
+      "category": "Sneakers",
+      "image": "assets/images/sm-snea-002.webp"
     },
     {
       "sku": "SM-SLIP-001",
@@ -161,7 +167,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Slippers"
+      "category": "Slippers",
+      "image": "assets/images/sm-slip-001.webp"
     },
     {
       "sku": "SM-SLIP-002",
@@ -182,7 +189,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Slippers"
+      "category": "Slippers",
+      "image": "assets/images/sm-slip-002.webp"
     },
     {
       "sku": "SM-RUN-001",
@@ -205,7 +213,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Runners"
+      "category": "Runners",
+      "image": "assets/images/sm-run-001.webp"
     },
     {
       "sku": "SM-RUN-002",
@@ -227,7 +236,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Runners"
+      "category": "Runners",
+      "image": "assets/images/sm-run-002.webp"
     },
     {
       "sku": "SM-RUN-003",
@@ -250,7 +260,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Runners"
+      "category": "Runners",
+      "image": "assets/images/sm-run-003.webp"
     },
     {
       "sku": "SM-RUN-004",
@@ -272,7 +283,8 @@
       "returns": "30-day returns, unworn.",
       "price": 1,
       "currency": "CAD",
-      "category": "Runners"
+      "category": "Runners",
+      "image": "assets/images/sm-run-004.webp"
     }
   ]
 }

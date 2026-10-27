@@ -36,7 +36,7 @@ Full steps in `docs/SETUP-LOCALWP.md`. Short version:
 
 - Currency is CAD (Cameron is in Toronto). Change in WooCommerce > Settings > General if the demo should be USD.
 - Sizing is US sizing. Product colours are fixed per product; size is the variable attribute. That keeps 79 variations instead of size × colour exploding.
-- No product images yet — images are a deliberate next step, and a useful thing for the agent to enrich later. For now products use WooCommerce placeholder images.
+- Product images: one generated studio image per shoe (12 total) in `assets/images/` and in the plugin at `wp-content/plugins/sole-mates-demo-data/images/`. The plugin attaches each image as the product featured image on activation. The CSV also lists each image as a raw GitHub URL, so the WooCommerce importer can fetch it once the images are in GitHub.
 - No real brand names. Product names are fictional / generic.
 
 ## Hackathon notes
