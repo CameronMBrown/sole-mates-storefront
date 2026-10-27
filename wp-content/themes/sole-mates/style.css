@@ -2,8 +2,8 @@
 Theme Name: Sole Mates
 Theme URI: https://github.com/CameronMBrown/sole-mates-storefront
 Author: WSI Hackathon Team
-Description: Child theme of Storefront for Sole Mates — a fictional mock shoe store for the Meta hackathon (Ovo agent-to-agent storefront enablement). Clean build first; intentional shortcomings will be introduced later for the audit demo. Visual polish inspired in general terms by a monochrome, editorial e-commerce style: black/white/light-grey, generous spacing, square product tiles, pill buttons.
-Version: 0.2.0
+Description: Child theme of Storefront for Sole Mates — a fictional mock shoe store for the Meta hackathon (Ovo agent-to-agent storefront enablement). Clean build first; intentional shortcomings will be introduced later for the audit demo. Visual polish inspired in general terms by a monochrome, editorial e-commerce style: black/white/light-grey, generous spacing, square product tiles, pill buttons. No PDP sidebar, no header search, no promo banner.
+Version: 0.3.0
 License: GNU General Public License v2 or later
 Template: storefront
 Text Domain: sole-mates
@@ -50,19 +50,10 @@ a:hover { color: var(--sm-text); }
   margin: 0 0 16px;
 }
 
-/* ---------- Announcement bar ---------- */
-.sm-announcement {
-  background: var(--sm-black);
-  color: var(--sm-white);
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 10px 24px;
-}
-
 /* ---------- Header ---------- */
+.sm-logo-link { display: inline-flex; align-items: center; }
+.sm-logo { height: 36px; width: auto; display: block; }
+.site-search, .woocommerce-product-search { display: none !important; }
 .site-header {
   background: var(--sm-white);
   border-bottom: 1px solid var(--sm-line);
@@ -257,7 +248,14 @@ a:hover { color: var(--sm-text); }
 .sm-cta h2 { color: var(--sm-white); font-size: 40px; margin: 0 0 16px; }
 .sm-cta p { color: #bdbdbd; max-width: 480px; margin: 0 0 28px; }
 
-/* ---------- Single product ---------- */
+/* ---------- Single product: no sidebar, full width ---------- */
+.single-product .widget-area, .single-product #secondary { display: none !important; }
+.single-product.right-sidebar .content-area,
+.single-product .content-area {
+  float: none;
+  width: 100%;
+  margin-right: 0;
+}
 .single-product .product .summary .price,
 .woocommerce div.product p.price {
   color: var(--sm-muted);
@@ -270,6 +268,115 @@ a:hover { color: var(--sm-text); }
 }
 .woocommerce div.product .product_title {
   font-size: 32px;
+}
+
+/* PDP tabs: bolder type, clear hover and active states */
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+  padding: 0;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--sm-line);
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs::before { border-bottom: 0; }
+.woocommerce div.product .woocommerce-tabs ul.tabs li {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  margin: 0 32px 0 0;
+  padding: 0;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::after { display: none; }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--sm-muted);
+  padding: 12px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover {
+  color: var(--sm-black);
+  border-bottom-color: var(--sm-black);
+  background: transparent;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a {
+  color: var(--sm-black);
+  border-bottom-color: var(--sm-black);
+}
+.woocommerce div.product .woocommerce-tabs .panel { padding: 8px 0 32px; }
+.woocommerce div.product .woocommerce-tabs .panel h2 { font-size: 20px; }
+
+/* Dropdowns: variation selects and nav sub-menus */
+.woocommerce div.product form.cart .variations select,
+.woocommerce select, select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--sm-white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23111' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  border: 1px solid #c9c9c9;
+  border-radius: 8px;
+  color: var(--sm-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 36px 12px 14px;
+  height: 44px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.woocommerce div.product form.cart .variations select:hover,
+.woocommerce select:hover, select:hover { border-color: var(--sm-black); }
+.woocommerce div.product form.cart .variations select:focus,
+.woocommerce select:focus, select:focus {
+  border-color: var(--sm-black);
+  box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.12);
+  outline: none;
+}
+.woocommerce div.product form.cart .variations label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sm-muted);
+}
+/* Main nav dropdowns */
+.main-navigation ul ul {
+  background: var(--sm-white);
+  border: 1px solid var(--sm-line);
+  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.08);
+  border-radius: 8px;
+  padding: 8px 0;
+}
+.main-navigation ul ul li a { padding: 10px 16px; }
+.main-navigation ul ul li a:hover { background: var(--sm-grey); text-decoration: none; }
+
+/* Number inputs: quantity on the PDP */
+.woocommerce div.product form.cart .quantity input.qty,
+.woocommerce .quantity input.qty,
+input[type="number"] {
+  border: 1px solid #c9c9c9;
+  border-radius: 8px;
+  color: var(--sm-text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  height: 44px;
+  width: 72px;
+  padding: 0 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.woocommerce div.product form.cart .quantity input.qty:hover,
+.woocommerce .quantity input.qty:hover,
+input[type="number"]:hover { border-color: var(--sm-black); }
+.woocommerce div.product form.cart .quantity input.qty:focus,
+.woocommerce .quantity input.qty:focus,
+input[type="number"]:focus {
+  border-color: var(--sm-black);
+  box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.12);
+  outline: none;
 }
 
 /* ---------- Footer: quiet, black ---------- */
