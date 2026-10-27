@@ -2,8 +2,8 @@
 Theme Name: Sole Mates
 Theme URI: https://github.com/CameronMBrown/sole-mates-storefront
 Author: WSI Hackathon Team
-Description: Child theme of Storefront for Sole Mates — a fictional mock shoe store for the Meta hackathon (Ovo agent-to-agent storefront enablement). Clean build first; intentional shortcomings will be introduced later for the audit demo. Visual polish inspired in general terms by a monochrome, editorial e-commerce style: black/white/light-grey, generous spacing, square product tiles, pill buttons. No PDP sidebar, no header search, no promo banner.
-Version: 0.3.0
+Description: Child theme of Storefront for Sole Mates — a fictional mock shoe store for the Meta hackathon (Ovo agent-to-agent storefront enablement). Clean build first; intentional shortcomings will be introduced later for the audit demo. Visual polish inspired in general terms by a monochrome, editorial e-commerce style: black/white/light-grey, generous spacing, square product tiles, pill buttons. No sidebar on product or shop pages, no header search, no promo banner.
+Version: 0.3.1
 License: GNU General Public License v2 or later
 Template: storefront
 Text Domain: sole-mates
@@ -248,10 +248,22 @@ a:hover { color: var(--sm-text); }
 .sm-cta h2 { color: var(--sm-white); font-size: 40px; margin: 0 0 16px; }
 .sm-cta p { color: #bdbdbd; max-width: 480px; margin: 0 0 28px; }
 
-/* ---------- Single product: no sidebar, full width ---------- */
-.single-product .widget-area, .single-product #secondary { display: none !important; }
+/* ---------- Single product + shop: no sidebar, full width ---------- */
+.single-product .widget-area, .single-product #secondary,
+.post-type-archive-product .widget-area, .post-type-archive-product #secondary,
+.tax-product_cat .widget-area, .tax-product_cat #secondary,
+.tax-product_tag .widget-area, .tax-product_tag #secondary,
+.woocommerce-page.archive .widget-area, .woocommerce-page.archive #secondary { display: none !important; }
 .single-product.right-sidebar .content-area,
-.single-product .content-area {
+.single-product .content-area,
+.post-type-archive-product.right-sidebar .content-area,
+.post-type-archive-product .content-area,
+.tax-product_cat.right-sidebar .content-area,
+.tax-product_cat .content-area,
+.tax-product_tag.right-sidebar .content-area,
+.tax-product_tag .content-area,
+.woocommerce-page.archive.right-sidebar .content-area,
+.woocommerce-page.archive .content-area {
   float: none;
   width: 100%;
   margin-right: 0;
@@ -261,10 +273,37 @@ a:hover { color: var(--sm-text); }
   color: var(--sm-muted);
   font-size: 18px;
 }
+/* PDP image viewer: square, image covers the whole area.
+   Aspect ratio is on the gallery itself, not div.images, so the
+   thumbnail row below (when a product has more than one image)
+   is not clipped. */
+.woocommerce div.product .woocommerce-product-gallery {
+  background: var(--sm-tile);
+}
+.woocommerce div.product .woocommerce-product-gallery__wrapper {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.woocommerce div.product .woocommerce-product-gallery__image,
+.woocommerce div.product .woocommerce-product-gallery__image a {
+  height: 100%;
+  display: block;
+}
 .woocommerce div.product .woocommerce-product-gallery__image,
 .woocommerce div.product .woocommerce-product-gallery img {
   background: var(--sm-tile);
   border-radius: 0;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.woocommerce div.product .woocommerce-product-gallery .flex-viewport { height: 100% !important; }
+.woocommerce div.product .flex-control-thumbs li img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: var(--sm-tile);
 }
 .woocommerce div.product .product_title {
   font-size: 32px;

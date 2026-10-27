@@ -2,14 +2,14 @@
 /**
  * Sole Mates — Storefront child theme.
  * Visual polish only: Inter type, monochrome palette.
- * PDP has no sidebar, header has no search, no promo banner.
+ * No sidebar on product or shop pages, header has no search, no promo banner.
  * Logo in the nav + favicon come from the theme's assets/ folder.
  */
 
 add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'sole-mates-inter', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap', array(), null );
     wp_enqueue_style( 'sole-mates-parent', get_template_directory_uri() . '/style.css' );
-    wp_enqueue_style( 'sole-mates', get_stylesheet_uri(), array( 'sole-mates-parent', 'sole-mates-inter' ), '0.3.0' );
+    wp_enqueue_style( 'sole-mates', get_stylesheet_uri(), array( 'sole-mates-parent', 'sole-mates-inter' ), '0.3.1' );
 } );
 
 add_action( 'after_setup_theme', function () {
@@ -24,12 +24,18 @@ add_action( 'init', function () {
     remove_action( 'storefront_header', 'storefront_product_search', 40 );
 } );
 
-// Remove the sidebar on single product pages (PDP) only.
-// Storefront uses its own storefront_sidebar hook; WooCommerce's
-// woocommerce_sidebar is removed as a fallback. is_product() only
-// works after the query has run, so this runs on get_header.
+// Remove the sidebar on single product pages (PDP), the shop page,
+// and product category / tag archives. Storefront uses its own
+// storefront_sidebar hook; WooCommerce's woocommerce_sidebar is
+// removed as a fallback. These conditionals only work after the
+// query has run, so this runs on get_header.
 add_action( 'get_header', function () {
-    if ( function_exists( 'is_product' ) && is_product() ) {
+    $is_store_page = false;
+    if ( function_exists( 'is_product' ) && is_product() ) $is_store_page = true;
+    if ( function_exists( 'is_shop' ) && is_shop() ) $is_store_page = true;
+    if ( function_exists( 'is_product_category' ) && is_product_category() ) $is_store_page = true;
+    if ( function_exists( 'is_product_taxonomy' ) && is_product_taxonomy() ) $is_store_page = true;
+    if ( $is_store_page ) {
         remove_action( 'storefront_sidebar', 'storefront_get_sidebar', 10 );
         remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10 );
     }
